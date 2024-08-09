@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="20dp">
+
+    <TextView
+        android:id="@+id/systemText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/baseline_chat_bubble_24"
+        android:layout_alignParentStart="true"
+        android:layout_marginEnd="50dp"
+        android:text="Hello Shawn do you have any questions?"
+        android:textAlignment="textStart"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/userText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/baseline_chat_bubble"
+        android:text="adklsfnladksfnaklsf"
+        android:textAlignment="textStart"
+        android:textColor="@color/white"
+        android:layout_marginStart="50dp"
+        android:textSize="16sp" />
+</RelativeLayout>
