@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
-import com.example.myapplication.Reply;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,24 +13,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.databinding.ActivityMainBinding;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.PopupMenu;
-import android.widget.Toolbar;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -72,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
                             return true;
                         } else if (item.getTitle().equals("Report")) {
                             Intent intent = new Intent(MainActivity.this, ReportActivity.class);
+                            intent.putExtra("url", getIntent().getStringExtra("url"));
                             startActivity(intent);
                             return true;
                         }
@@ -105,15 +98,18 @@ public class MainActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        getHttpCustomSearch(prompt);
+                        getHttpCustomSearch(prompt , buttonSend);
                     }
                 }).start();
                 messageAdapter.addMessage(new Message(prompt, true));
+                buttonSend.setText("...");
+                buttonSend.setAlpha(0.5F);
+                buttonSend.setClickable(false);
             }
         });
     }
 
-    private void getHttpCustomSearch(String prompt) {
+    private void getHttpCustomSearch(String prompt, MaterialButton buttonSend) {
         String cx = "d7a1ae5beb8ce4696";
         String apiKey = "AIzaSyD1Ne7Vwx7s9bBnyDvpTxliluKC10m-RdE";
         String fields = "items(title,link,snippet)";
@@ -131,12 +127,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 String responseBody = response.body().string();
-                postHttp(null, responseBody, prompt);
+                postHttp(null, responseBody, prompt, buttonSend);
             }
         });
     }
 
-    private void postHttp(RecyclerView recyclerView, String responseBody, String prompt) {
+    private void postHttp(RecyclerView recyclerView, String responseBody, String prompt, MaterialButton buttonSend) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("model", "gpt-4");
         JsonArray msgs = new JsonArray();
@@ -186,6 +182,9 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             messageAdapter.addMessage(new Message(reply, false));
+                            buttonSend.setText("Send");
+                            buttonSend.setAlpha(1F);
+                            buttonSend.setClickable(true);
                         }
                     });
                 } else {

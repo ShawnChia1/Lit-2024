@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,12 +47,15 @@ public class BrowserActivity extends AppCompatActivity {
     private String url;
     private EditText editText;
     private boolean proceed = false;
+    public static ArrayList<String[]> urlBlacklist = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browser);
-
+        if (savedInstanceState != null) {
+            webView.restoreState(savedInstanceState);  // Restore the WebView state
+        }
         ImageView overflowMenu = findViewById(R.id.overflowMenu);
         overflowMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,10 +68,12 @@ public class BrowserActivity extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem item) {
                        if (item.getTitle().equals("Misinformation Tool")) {
                            Intent intent = new Intent(BrowserActivity.this, MainActivity.class);
+                           intent.putExtra("url", url);
                            startActivity(intent);
                            return true;
                        } else if (item.getTitle().equals("Report")) {
                            Intent intent = new Intent(BrowserActivity.this, ReportActivity.class);
+                           intent.putExtra("url", url);
                            startActivity(intent);
                            return true;
                        }
@@ -109,9 +115,18 @@ public class BrowserActivity extends AppCompatActivity {
                 public void run() {
                     editText.setText(url);
                     BrowserActivity.this.url = url;
-                    if (url.contains("cursedcomments") && !proceed) {
+                    boolean isOnlineHarm = false;
+                    String category = null;
+                    for (String[] r : urlBlacklist) {
+                        if (url.contains(r[0])) {
+                            isOnlineHarm = true;
+                            category = r[1];
+                            break;
+                        }
+                    }
+                    if (isOnlineHarm && !proceed) {
                         webView.stopLoading();
-                        showAlertDialog();
+                        showAlertDialog(category);
                     } else {
                         webView.postDelayed(new Runnable() {
                             @Override
@@ -152,9 +167,18 @@ public class BrowserActivity extends AppCompatActivity {
             super.onPageStarted(view, url, favicon);
             editText.setText(url);
             BrowserActivity.this.url = url;
-            if (url.contains("cursedcomments") && !proceed) {
+            boolean isOnlineHarm = false;
+            String category = null;
+            for (String[] r : urlBlacklist) {
+                if (url.contains(r[0])) {
+                    isOnlineHarm = true;
+                    category = r[1];
+                    break;
+                }
+            }
+            if (isOnlineHarm && !proceed) {
                 webView.stopLoading();
-                showAlertDialog();
+                showAlertDialog(category);
             }
             if (proceed) {
                 proceed = false;
@@ -165,7 +189,8 @@ public class BrowserActivity extends AppCompatActivity {
         public void onPageFinished(WebView view, String url) {
             Log.d(TAG, "page finished: " + url);
             super.onPageFinished(view, url);
-
+            editText.setText(url);
+            BrowserActivity.this.url = url;
             webView.evaluateJavascript(
                     "javascript:(function() {" +
                             "   function notifyContentLoaded() {" +
@@ -315,15 +340,16 @@ public class BrowserActivity extends AppCompatActivity {
         return r;
     }
 
-    private void showAlertDialog() {
+    private void showAlertDialog(String category) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Warning!");
-        builder.setMessage("This website was flagged for racism");
+        builder.setMessage("This website was flagged for " + category);
         builder.setPositiveButton("Go back", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (webView.canGoBack()) {
-                    webView.goBack();
+                    dialog.dismiss();
+//                    webView.goBack();
                 }
             }
         });
@@ -345,6 +371,12 @@ public class BrowserActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        webView.saveState(outState);
     }
 }
 

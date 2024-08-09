@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.navigation.NavController;
@@ -19,6 +20,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.myapplication.databinding.ActivityReportBinding;
+import com.google.android.material.textfield.TextInputEditText;
 
 public class ReportActivity extends AppCompatActivity {
 
@@ -31,7 +33,12 @@ public class ReportActivity extends AppCompatActivity {
         setContentView(R.layout.activity_report);
 
         AutoCompleteTextView autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
-        String[] options = new String[] {"Misinformation", "Racism", "Terroism", "Child Abuse", "Rape"};
+        TextInputEditText textInputEditText = findViewById(R.id.textInputEditText);
+        String url = getIntent().getStringExtra("url");
+        if (url != null && !url.isEmpty()) {
+            textInputEditText.setText(url);
+        }
+        String[] options = new String[] {"Misinformation", "Racism", "Terroism", "Child Abuse", "Rape", "Harassment"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, options);
         autoCompleteTextView.setAdapter(adapter);
 
@@ -40,6 +47,19 @@ public class ReportActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(ReportActivity.this, "Report submitted successfully", Toast.LENGTH_SHORT).show();
+                if (url != null && !url.isEmpty()) {
+                    String[] result = new String[2];
+                    result[0] = url;
+                    result[1] = autoCompleteTextView.getText().toString();
+                    BrowserActivity.urlBlacklist.add(result);
+                }
+                finish();
+            }
+        });
+        ImageButton closeButton = findViewById(R.id.closeButton);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 finish();
             }
         });

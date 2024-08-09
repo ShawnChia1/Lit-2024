@@ -15,6 +15,14 @@
         android:textAlignment="center"
         android:textSize="25sp" />
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/closeButton"
+        android:src="@drawable/baseline_close_24"
+        android:backgroundTint="@android:color/transparent"
+        android:layout_alignEnd="@id/pageTitle"/>
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/url"
         android:layout_width="match_parent"
@@ -28,7 +36,8 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:id="@+id/textInputEditText" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -39,13 +48,15 @@
         android:layout_marginStart="50dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="50dp"
-        android:hint="    Category"
+        android:hint="Category"
         app:endIconMode="dropdown_menu">
 
         <AutoCompleteTextView
             android:id="@+id/autoCompleteTextView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:paddingStart="12dp"
+            android:inputType="none" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
