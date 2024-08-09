@@ -53,9 +53,7 @@ public class BrowserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browser);
-        if (savedInstanceState != null) {
-            webView.restoreState(savedInstanceState);  // Restore the WebView state
-        }
+
         ImageView overflowMenu = findViewById(R.id.overflowMenu);
         overflowMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -371,12 +369,6 @@ public class BrowserActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        webView.saveState(outState);
     }
 }
 
