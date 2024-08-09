@@ -38,7 +38,7 @@ public class ReportActivity extends AppCompatActivity {
         if (url != null && !url.isEmpty()) {
             textInputEditText.setText(url);
         }
-        String[] options = new String[] {"Misinformation", "Racism", "Terroism", "Child Abuse", "Rape", "Harassment"};
+        String[] options = new String[] {"Disinformation", "Racism", "Terroism", "Crime", "Sexual", "Harassment", "Violence", "Self-harm", "Cyberbullying", "Promoting unhealthy lifestlyes", "Encouraging actions that endanger public health"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, options);
         autoCompleteTextView.setAdapter(adapter);
 
