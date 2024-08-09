@@ -247,7 +247,7 @@ public class BrowserActivity extends AppCompatActivity {
                                 RequestBody requestBody = RequestBody.create(jsonString, MediaType.parse("application/JSON"));
                                 Request request = new Request.Builder()
                                         .url("https://api.openai.com/v1/moderations")
-                                        .addHeader("Authorization", "Bearer sk-proj-fttpzq1irm9DoId34VlWT3BlbkFJemA5tmofKqr0Qp3R9WKI")
+                                        .addHeader("Authorization", "Bearer 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")
                                         .post(requestBody)
                                         .build();
                                 OkHttpClient client = new OkHttpClient();
